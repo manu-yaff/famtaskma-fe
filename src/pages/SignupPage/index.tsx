@@ -1,7 +1,8 @@
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { signup } from '../../api';
+import { routes } from '../../routes';
 
 function SignupPage() {
   const navigate = useNavigate();
@@ -15,19 +16,15 @@ function SignupPage() {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
-    mutation.mutate({ name, email, password });
+    mutate({ name, email, password });
   }
 
-  const mutation = useMutation({
+  const { mutate, isPending, error, isSuccess } = useMutation({
     mutationFn: signup,
   });
 
-  if (mutation.isPending) return <h2>Loading</h2>;
-
-  if (mutation.error) return <h2>{mutation.error.message}</h2>;
-
-  if (mutation.isSuccess) {
-    navigate('/login');
+  if (isSuccess) {
+    navigate(routes.login);
   }
 
   return (
@@ -43,6 +40,10 @@ function SignupPage() {
           </Button>
         </Stack>
       </form>
+
+      {isPending && <CircularProgress />}
+
+      {error && <Alert severity="error">{error.message}</Alert>}
     </>
   );
 }
