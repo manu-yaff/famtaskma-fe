@@ -15,6 +15,29 @@ type LoginResponse = {
   };
 };
 
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  createdAt: string;
+  updatedAt: string;
+  shoppingLists: Array<string>;
+};
+
+type ShoppingList = {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  users: User[];
+};
+
+type ShoppingListsResponse = {
+  error: boolean;
+  data: ShoppingList[];
+};
+
 export async function signup(newUser: NewUserDto) {
   const response = await fetch(`${api}/auth/register`, {
     headers: {
@@ -45,4 +68,21 @@ export async function login(loginCredentials: LoginCredentials) {
   }
 
   return response.json() as Promise<LoginResponse>;
+}
+
+export async function fetchShoppingLists() {
+  const token = localStorage.getItem('token');
+
+  const response = await fetch(`${api}/shopping-lists`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Something went wrong');
+  }
+
+  return response.json() as Promise<ShoppingListsResponse>;
 }
