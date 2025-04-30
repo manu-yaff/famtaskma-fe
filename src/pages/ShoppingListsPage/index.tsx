@@ -1,9 +1,10 @@
-import { Alert, Button, CircularProgress, Typography } from '@mui/material';
+import { Alert, CircularProgress, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { fetchShoppingLists } from '../../api';
+import AddShoppingListForm from '../../components/AddShoppingListForm';
 
 function ShoppingListsPage() {
-  const { isPending, isError, data, error } = useQuery({
+  const { isPending, isError, data, error, refetch } = useQuery({
     queryKey: ['shopping-lists'],
     queryFn: fetchShoppingLists,
   });
@@ -19,7 +20,8 @@ function ShoppingListsPage() {
   return (
     <>
       <Typography variant="h3">Listas de compra</Typography>
-      <Button variant="contained">Agregar</Button>
+
+      <AddShoppingListForm refetch={refetch} />
 
       {data.data.length === 0 && <Typography variant="body2">No tienes ninguna lista</Typography>}
 
